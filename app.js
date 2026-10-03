@@ -3,7 +3,7 @@ const app = express();
 
 app.use(express.json());
 
-let languageClasses = [
+let kelasBahasa = [
     {
         id: 1,
         namaKelas: "Nihongo Pemula",
@@ -52,24 +52,24 @@ app.get('/', (req, res) => {
 app.get('/kelas-bahasa', (req, res) => {
     const { bahasa } = req.query;
     if (bahasa) {
-        const filtered = languageClasses.filter(c => c.bahasa.toLowerCase() === bahasa.toLowerCase());
-        return res.status(200).json(filtered);
+        const hasilFilter = kelasBahasa.filter(c => c.bahasa.toLowerCase() === bahasa.toLowerCase());
+        return res.status(200).json(hasilFilter);
     }
-    return res.status(200).json(languageClasses);
+    return res.status(200).json(kelasBahasa);
 });
 
 // GET /kelas-bahasa/:id
 app.get('/kelas-bahasa/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const result = languageClasses.find(c => c.id === id);
-    if (!result) {
+    const hasil = kelasBahasa.find(c => c.id === id);
+    if (!hasil) {
         return res.status(404).json({
             status: "error",
             message: `Data dengan id ${id} tidak ditemukan`,
             data: null
         });
     }
-    return res.status(200).json(result);
+    return res.status(200).json(hasil);
 });
 
 // POST /kelas-bahasa
@@ -85,8 +85,8 @@ app.post('/kelas-bahasa', (req, res) => {
         });
     }
 
-    const validLevels = ["dasar", "menengah", "lanjut"];
-    if (!validLevels.includes(level)) {
+    const levelTersedia = ["dasar", "menengah", "lanjut"];
+    if (!levelTersedia.includes(level)) {
         return res.status(400).json({
             status: "error",
             message: "Level harus dasar, menengah, atau lanjut",
@@ -94,7 +94,7 @@ app.post('/kelas-bahasa', (req, res) => {
         });
     }
 
-    const newClass = {
+    const kelasBaru = {
         id: nextId++,
         namaKelas,
         bahasa,
@@ -103,12 +103,12 @@ app.post('/kelas-bahasa', (req, res) => {
         biaya: Number(biaya)
     };
 
-    languageClasses.push(newClass);
+    kelasBahasa.push(kelasBaru);
 
     res.status(201).json({
         status: "success",
         message: "Data berhasil ditambahkan",
-        data: newClass
+        data: kelasBaru
     });
 });
 
@@ -116,7 +116,7 @@ app.post('/kelas-bahasa', (req, res) => {
 // Body: { "namaKelas": "Nihongo Menengah", "bahasa": "Jepang", "level": "menengah", "jumlahPertemuan": 20, "biaya": 1500000 }
 app.put('/kelas-bahasa/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const index = languageClasses.findIndex(c => c.id === id);
+    const index = kelasBahasa.findIndex(c => c.id === id);
     
     if (index === -1) {
         return res.status(404).json({
@@ -136,8 +136,8 @@ app.put('/kelas-bahasa/:id', (req, res) => {
         });
     }
 
-    const validLevels = ["dasar", "menengah", "lanjut"];
-    if (!validLevels.includes(level)) {
+    const levelTersedia = ["dasar", "menengah", "lanjut"];
+    if (!levelTersedia.includes(level)) {
         return res.status(400).json({
             status: "error",
             message: "Level harus dasar, menengah, atau lanjut",
@@ -145,7 +145,7 @@ app.put('/kelas-bahasa/:id', (req, res) => {
         });
     }
 
-    languageClasses[index] = {
+    kelasBahasa[index] = {
         id,
         namaKelas,
         bahasa,
@@ -157,14 +157,14 @@ app.put('/kelas-bahasa/:id', (req, res) => {
     res.status(200).json({
         status: "success",
         message: "Data berhasil diubah",
-        data: languageClasses[index]
+        data: kelasBahasa[index]
     });
 });
 
 // DELETE /kelas-bahasa/:id
 app.delete('/kelas-bahasa/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const index = languageClasses.findIndex(c => c.id === id);
+    const index = kelasBahasa.findIndex(c => c.id === id);
     
     if (index === -1) {
         return res.status(404).json({
@@ -174,7 +174,7 @@ app.delete('/kelas-bahasa/:id', (req, res) => {
         });
     }
 
-    languageClasses.splice(index, 1);
+    kelasBahasa.splice(index, 1);
     
     res.status(200).json({
         status: "success",
