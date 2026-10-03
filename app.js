@@ -38,18 +38,18 @@ app.get('/', (req, res) => {
         NIM: "2327240123",
         nomor_topik: 5,
         daftar_endpoint: [
-            "GET /language-classes",
-            "GET /language-classes/:id",
-            "POST /language-classes",
-            "PUT /language-classes/:id",
-            "DELETE /language-classes/:id",
-            "GET /language-classes?bahasa=nilai"
+            "GET /kelas-bahasa",
+            "GET /kelas-bahasa/:id",
+            "POST /kelas-bahasa",
+            "PUT /kelas-bahasa/:id",
+            "DELETE /kelas-bahasa/:id",
+            "GET /kelas-bahasa?bahasa=nilai"
         ]
     });
 });
 
-// GET /language-classes
-app.get('/language-classes', (req, res) => {
+// GET /kelas-bahasa
+app.get('/kelas-bahasa', (req, res) => {
     const { bahasa } = req.query;
     if (bahasa) {
         const filtered = languageClasses.filter(c => c.bahasa.toLowerCase() === bahasa.toLowerCase());
@@ -58,8 +58,8 @@ app.get('/language-classes', (req, res) => {
     return res.status(200).json(languageClasses);
 });
 
-// GET /language-classes/:id
-app.get('/language-classes/:id', (req, res) => {
+// GET /kelas-bahasa/:id
+app.get('/kelas-bahasa/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const result = languageClasses.find(c => c.id === id);
     if (!result) {
@@ -72,9 +72,9 @@ app.get('/language-classes/:id', (req, res) => {
     return res.status(200).json(result);
 });
 
-// POST /language-classes
+// POST /kelas-bahasa
 // Body: { "namaKelas": "Nihongo Pemula", "bahasa": "Jepang", "level": "dasar", "jumlahPertemuan": 16, "biaya": 1200000 }
-app.post('/language-classes', (req, res) => {
+app.post('/kelas-bahasa', (req, res) => {
     const { namaKelas, bahasa, level, jumlahPertemuan, biaya } = req.body;
     
     if (!namaKelas || !bahasa || !level || jumlahPertemuan === undefined || biaya === undefined) {
@@ -112,9 +112,9 @@ app.post('/language-classes', (req, res) => {
     });
 });
 
-// PUT /language-classes/:id
+// PUT /kelas-bahasa/:id
 // Body: { "namaKelas": "Nihongo Menengah", "bahasa": "Jepang", "level": "menengah", "jumlahPertemuan": 20, "biaya": 1500000 }
-app.put('/language-classes/:id', (req, res) => {
+app.put('/kelas-bahasa/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const index = languageClasses.findIndex(c => c.id === id);
     
@@ -161,8 +161,8 @@ app.put('/language-classes/:id', (req, res) => {
     });
 });
 
-// DELETE /language-classes/:id
-app.delete('/language-classes/:id', (req, res) => {
+// DELETE /kelas-bahasa/:id
+app.delete('/kelas-bahasa/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const index = languageClasses.findIndex(c => c.id === id);
     
