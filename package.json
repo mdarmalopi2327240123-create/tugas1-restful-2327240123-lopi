@@ -99,8 +99,10 @@
     "wrappy": "^1.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "dev": "nodemon app.js",
+  "start": "node app.js"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mdarmalopi2327240123-create/tugas1-restful-2327240123-lopi.git"
