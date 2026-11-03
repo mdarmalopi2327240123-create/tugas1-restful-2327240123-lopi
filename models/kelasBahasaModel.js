@@ -1,37 +1,65 @@
-let kelasBahasa = [
-  { id: 1, namaKelas: "Nihongo Pemula", bahasa: "Jepang", level: "dasar", jumlahPertemuan: 16, biaya: 1200000 },
-  { id: 2, namaKelas: "English for Business", bahasa: "Inggris", level: "menengah", jumlahPertemuan: 20, biaya: 2500000 },
-  { id: 3, namaKelas: "Kookmin Korean", bahasa: "Korea", level: "lanjut", jumlahPertemuan: 12, biaya: 1800000 }
-];
-let nextId = 4;
+const mongoose = require('mongoose');
 
-function getAll(bahasa) {
-  if (bahasa) return kelasBahasa.filter((c) => c.bahasa.toLowerCase() === bahasa.toLowerCase());
-  return kelasBahasa;
-}
+// 1. EMBEDDED SCHEMA: Jadwal Pertemuan (Embedding Subdocument)
+const jadwalSchema = new mongoose.Schema({
+  hari: {
+    type: String,
+    required: [true, 'Hari pertemuan wajib diisi'],
+    enum: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
+  },
+  jamMulai: {
+    type: String,
+    required: [true, 'Jam mulai wajib diisi']
+  },
+  jamSelesai: {
+    type: String,
+    required: [true, 'Jam selesai wajib diisi']
+  },
+  ruangan: {
+    type: String,
+    default: 'Online / Zoom'
+  }
+}, { _id: false });
 
-function getById(id) {
-  return kelasBahasa.find((c) => c.id === id);
-}
+// 2. MAIN SCHEMA: Kelas Bahasa
+const kelasBahasaSchema = new mongoose.Schema({
+  namaKelas: {
+    type: String,
+    required: [true, 'Nama kelas wajib diisi'],
+    trim: true
+  },
+  bahasa: {
+    type: String,
+    required: [true, 'Bahasa wajib diisi'],
+    trim: true
+  },
+  level: {
+    type: String,
+    required: [true, 'Level wajib diisi'],
+    enum: {
+      values: ['dasar', 'menengah', 'lanjut'],
+      message: 'Level harus dasar, menengah, atau lanjut'
+    },
+    lowercase: true,
+    trim: true
+  },
+  jumlahPertemuan: {
+    type: Number,
+    required: [true, 'Jumlah pertemuan wajib diisi'],
+    min: [1, 'Jumlah pertemuan minimal 1']
+  },
+  biaya: {
+    type: Number,
+    required: [true, 'Biaya wajib diisi'],
+    min: [0, 'Biaya tidak boleh bernilai negatif']
+  },
+  // EMBEDDING: Jadwal Pertemuan
+  jadwal: jadwalSchema,
+  // REFERENCING: Relasi ke Schema Instruktur (ObjectId)
+  instrukturId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Instruktur'
+  }
+}, { timestamps: true });
 
-function create(data) {
-  const baru = { id: nextId++, ...data };
-  kelasBahasa.push(baru);
-  return baru;
-}
-
-function update(id, data) {
-  const index = kelasBahasa.findIndex((c) => c.id === id);
-  if (index === -1) return null;
-  kelasBahasa[index] = { ...kelasBahasa[index], ...data, id };
-  return kelasBahasa[index];
-}
-
-function remove(id) {
-  const index = kelasBahasa.findIndex((c) => c.id === id);
-  if (index === -1) return false;
-  kelasBahasa.splice(index, 1);
-  return true;
-}
-
-module.exports = { getAll, getById, create, update, remove };
+module.exports = mongoose.model('KelasBahasa', kelasBahasaSchema);
